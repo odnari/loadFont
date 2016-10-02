@@ -1,0 +1,8 @@
+- name
+- settings
+    - weigth
+    - style
+    - stretch
+    - timeout
+- onload (_function_)
+- next (_font definition obj_)
