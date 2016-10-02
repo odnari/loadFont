@@ -136,6 +136,13 @@
         return fontSequence;
     }
 
+    /**
+     * generate unique cache-key for the each font node
+     * @param fontName
+     * @param settings
+     * @returns {string|*}
+     * @private
+     */
     function _genCacheKey(fontName, settings) {
         var cacheKey,
             settingsKeys,
@@ -154,13 +161,17 @@
         return cacheKey;
     }
 
+    /**
+     * switch on cache for the font
+     * @param fontPromise
+     * @param cacheKey
+     * @returns {*}
+     * @private
+     */
     function _handleCache(fontPromise, cacheKey) {
         return fontPromise
             .then(function () {
                 sessionStorage[cacheKey] = true;
-            })
-            .catch(function () {
-                sessionStorage[cacheKey] = false;
             });
     }
 

@@ -3,6 +3,6 @@
     - weigth
     - style
     - stretch
-    - timeout
+- timeout
 - onload (_function_)
 - next (_font definition obj_)
