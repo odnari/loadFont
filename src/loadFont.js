@@ -5,7 +5,7 @@
         root.loadFont = factory(root.FontFaceObserver);
     }
 }(this, function (FontFaceObserver) {
-    var defaults = {
+    const defaults = {
         cacheNamePrefix: 'loadFont_fontsLoaded__',
         timeout: 3000
     };
@@ -16,11 +16,8 @@
      * @returns {*}
      */
     function load(fontList) {
-        var fontPromiseArray,
-            fontLoadingQuery;
-
-        fontLoadingQuery = _makeFontNodes(fontList);
-        fontPromiseArray = _loadFontList(fontLoadingQuery);
+        const fontLoadingQuery = _makeFontNodes(fontList);
+        const fontPromiseArray = _loadFontList(fontLoadingQuery);
 
         return Promise.all(fontPromiseArray);
     }
@@ -32,14 +29,7 @@
      * @private
      */
     function _loadFontList(fontQuery) {
-        var fontPromiseQuery = new Array(fontQuery.length);
-        var i;
-
-        for (i = 0; i < fontQuery.length; i++) {
-            fontPromiseQuery[i] = _loadFontQuery(fontQuery[i])
-        }
-
-        return fontPromiseQuery;
+        return fontQuery.map((fontNode) => _loadFontQuery(fontNode));
     }
 
     /**
@@ -49,10 +39,10 @@
      * @private
      */
     function _loadFontQuery(fontNode) {
-        var fontPromise;
+        let fontPromise;
 
         if (!fontNode.observer) {
-            fontPromise = Promise.reject(new Error("Observer object not found."));
+            fontPromise = Promise.reject(new Error('Observer object not found.'));
         } else {
             fontPromise = _loadFont(fontNode.observer, fontNode.timeout, fontNode.cacheKey);
         }
@@ -62,9 +52,7 @@
         }
 
         if (fontNode.next) {
-            fontPromise.then(function () {
-                _loadFontQuery(fontNode.next);
-            });
+            fontPromise.then(() => _loadFontQuery(fontNode.next));
         }
 
         return fontPromise;
@@ -79,7 +67,7 @@
      * @private
      */
     function _loadFont(observer, timeout, cacheKey) {
-        var fontPromise;
+        let fontPromise;
 
         if (sessionStorage[cacheKey]) {
             fontPromise = Promise.resolve();
@@ -100,14 +88,7 @@
      * @private
      */
     function _makeFontNodes(fontList) {
-        var fontQuery = new Array(fontList.length);
-        var i;
-
-        for (i = 0; i < fontQuery.length; i++) {
-            fontQuery[i] = _makeFontQuery(fontList[i]);
-        }
-
-        return fontQuery;
+        return fontList.map((fontDef) => _makeFontQuery(fontDef));
     }
 
     /**
@@ -117,20 +98,20 @@
      * @private
      */
     function _makeFontQuery(fontDefinition) {
-        var fontSequence = {};
+        let fontSequence = {};
 
         if (!fontDefinition.name) return null;
 
-        fontSequence["observer"] = new FontFaceObserver(fontDefinition.name, fontDefinition.settings);
-        fontSequence["cacheKey"] = _genCacheKey(fontDefinition.name, fontDefinition.settings);
-        fontSequence["timeout"] = fontDefinition.timeout || defaults.timeout;
+        fontSequence['observer'] = new FontFaceObserver(fontDefinition.name, fontDefinition.settings);
+        fontSequence['cacheKey'] = _genCacheKey(fontDefinition.name, fontDefinition.settings);
+        fontSequence['timeout'] = fontDefinition.timeout || defaults.timeout;
 
         if (fontDefinition.onload) {
-            fontSequence["onload"] = fontDefinition.onload;
+            fontSequence['onload'] = fontDefinition.onload;
         }
 
         if (fontDefinition.next) {
-            fontSequence["next"] = _makeFontQuery(fontDefinition["next"]);
+            fontSequence['next'] = _makeFontQuery(fontDefinition['next']);
         }
 
         return fontSequence;
@@ -144,18 +125,15 @@
      * @private
      */
     function _genCacheKey(fontName, settings) {
-        var cacheKey,
-            settingsKeys,
-            i;
+        let cacheKey,
+            settingsKeys;
 
         cacheKey = defaults.cacheNamePrefix + fontName.replace(/ /g, '_');
 
         if (typeof settings === 'object') {
             settingsKeys = Object.keys(settings);
 
-            for (i = 0; i < settingsKeys.length; i++) {
-                cacheKey += '_' + settings[settingsKeys[i]];
-            }
+            cacheKey += settingsKeys.reduce((cacheKeyPart, settingName) => cacheKeyPart += '_' + settings[settingName], '');
         }
 
         return cacheKey;
@@ -169,10 +147,7 @@
      * @private
      */
     function _handleCache(fontPromise, cacheKey) {
-        return fontPromise
-            .then(function () {
-                sessionStorage[cacheKey] = true;
-            });
+        return fontPromise.then(() => sessionStorage[cacheKey] = true);
     }
 
     return {
