@@ -13,7 +13,7 @@
     /**
      * load fonts
      * @param fontList
-     * @returns {*}
+     * @returns {Promise}
      */
     function load(fontList) {
         const fontLoadingQuery = _makeFontNodes(fontList);
@@ -35,7 +35,7 @@
     /**
      * load a query of fonts
      * @param fontNode
-     * @returns {Promise|*}
+     * @returns {Promise}
      * @private
      */
     function _loadFontQuery(fontNode) {
@@ -63,7 +63,7 @@
      * @param observer - fontfaceobserver object
      * @param timeout - loading timeout
      * @param cacheKey - key for session cache
-     * @returns {Promise} - promicse for font
+     * @returns {Promise} - promise for font
      * @private
      */
     function _loadFont(observer, timeout, cacheKey) {
@@ -121,7 +121,7 @@
      * generate unique cache-key for the each font node
      * @param fontName
      * @param settings
-     * @returns {string|*}
+     * @returns {string}
      * @private
      */
     function _genCacheKey(fontName, settings) {
@@ -133,7 +133,10 @@
         if (typeof settings === 'object') {
             settingsKeys = Object.keys(settings);
 
-            cacheKey += settingsKeys.reduce((cacheKeyPart, settingName) => cacheKeyPart += '_' + settings[settingName], '');
+            cacheKey += settingsKeys
+                .reduce((cacheKeyPart, settingName) => {
+                    return cacheKeyPart += '_' + settings[settingName];
+                }, '');
         }
 
         return cacheKey;
@@ -143,7 +146,7 @@
      * switch on cache for the font
      * @param fontPromise
      * @param cacheKey
-     * @returns {*}
+     * @returns {Promise}
      * @private
      */
     function _handleCache(fontPromise, cacheKey) {
