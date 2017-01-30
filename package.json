@@ -1,7 +1,7 @@
 {
   "name": "loadfont",
-  "version": "0.1.0",
-  "description": "A simple wrapper for FontFaceObserver",
+  "version": "0.1.1",
+  "description": "A simple wrapper for FontFaceObserver library with more comfortable configuration for font-heavy web projects.",
   "main": "loadFont.js",
   "directories": {
     "test": "test"
@@ -19,7 +19,7 @@
     "font-loading",
     "fontfaceobserver"
   ],
-  "author": "Nick Bodnariuk",
+  "author": "Nick Bodnariuk <rezoh@ya.ru>",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/rezoh/loadFont/issues"
